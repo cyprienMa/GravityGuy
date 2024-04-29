@@ -28,27 +28,19 @@ int Guy::hauteur(int t0) const {
     return h;
 }
 
-void obstacle_1::set(int t, int x) {
+void obstacle::set(int t, int x) {
     tInit=t;
     xInit=x;
 }
 //On initialise les paramètres de l'obstacle: t=0 et x=10001
-obstacle_1::obstacle_1() {
+obstacle::obstacle() {
     set(0, 1000);
 }
 
 //Renvoie le centre de l'obstacle_1
-int obstacle_1::center(int t) const {
+int obstacle::center(int t) const {
     return xInit-(t-tInit)*vitesse;
 }
 
-//
-bool obstacle_1::reInit(int t, int xBase) {
-    if(center(t) < h_obstacle) {
-        tInit= t;
-        xInit= std::max(w,xBase+intRandom(1*t_saut*vitesse,3*t_saut*vitesse));
-        return true;
-    }
-    return false;
-}
+
 

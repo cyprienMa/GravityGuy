@@ -1,4 +1,5 @@
 #pragma once
+#include <random>
 int const w = 500;
 int const h = 300;
 
@@ -28,11 +29,10 @@ public:
     int hauteur(int t0) const;
 };
 
-class obstacle_1{
+class obstacle{
     int tInit, xInit;
 public:
-    obstacle_1();
+    obstacle();
     void set(int t, int x);
     int center(int t) const;
-    bool reInit(int t, int xBase);
 };
