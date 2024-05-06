@@ -18,14 +18,28 @@ bool Guy::check_saut(int t0) const {
     return t<=t0 && t0<=t+t_saut;
 }
 
+void Guy::switch_gravity(int t0) {
+    ts = t0;
+    state = !state;
+}
+
+bool Guy::check_gravity(int t0) const {
+    return ts<=t0 && t0<=ts+t_gravity;
+}
+
 //Si le Guy est en train de sauter, alors on calcule sa hauteur
 int Guy::hauteur(int t0) const {
-    float h = 0;
+    float H = 0;
     if(check_saut(t0)) {
         float x = 1-2*(t0-t)/(float)t_saut;  //La trajectoire du Guy suit une parabole ce qui nous donne sa hauteur
-        h=h_saut*(1-x*x);
+        H=h_saut*(1-x*x);
     }
-    return h;
+
+    if(state){
+        if(check_gravity(t0)){
+
+    }
+    return H;
 }
 
 void obstacle::set(int t, int x) {
@@ -37,10 +51,18 @@ obstacle::obstacle() {
     set(0, 1000);
 }
 
-//Renvoie le centre de l'obstacle_1
-int obstacle::center(int t) const {
+//Renvoie le centre de l'obstacle de la première phase
+int obstacle::center_1(int t) const {
     return xInit-(t-tInit)*vitesse;
 }
 
+//Renvoie le centre de l'obstacle de la seconde phase
+int obstacle::center_2(int t) const {
+    return xInit-(t-tInit)*v2;
+}
 
+//Renvoie le centre de l'obstacle de la troisième phase
+int obstacle::center_3(int t) const {
+    return xInit-(t-tInit)*v3;
+}
 

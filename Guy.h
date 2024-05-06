@@ -15,6 +15,8 @@ const int h_saut = 3*hGuy;
 
 //Vitesse du jeu
 const int vitesse = 8;
+const int v2 = 1.10*vitesse;
+const int v3 = 1.25*vitesse;
 
 //Hauteur d'un obstacle
 const int h_obstacle = 3*hGuy/4;
@@ -22,9 +24,11 @@ const int h_obstacle = 3*hGuy/4;
 
 class Guy{
     int t; //Date du début du dernier saut du Guy
+    int ts; //Date du début du dernier switch de gravité du Guy
 public:
     Guy();
     void saut(int t0);
+    void switch_gravity(int t0);
     bool check_saut(int t0) const;
     int hauteur(int t0) const;
 };
@@ -34,5 +38,7 @@ class obstacle{
 public:
     obstacle();
     void set(int t, int x);
-    int center(int t) const;
+    int center_1(int t) const;
+    int center_2(int t) const;
+    int center_3(int t) const;
 };

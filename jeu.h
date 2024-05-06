@@ -2,7 +2,7 @@
 #include"Guy.h"
 
 //Nombre d'obstacle sur la fenêtre
-const int n_obstacle = 5;
+const int n_obstacle = 15;
 
 class jeu{
     //Le Guy du jeu
