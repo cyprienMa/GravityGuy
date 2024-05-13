@@ -74,7 +74,7 @@ void jeu::dessin(int t) const {
         }
 
     //On dessine le guy
-    fillRect(xGuy, h-hGuy-guy.hauteur(t), wGuy, hGuy, PURPLE);
+    fillRect(xGuy, guy.hauteur(t), wGuy, hGuy, PURPLE);
     noRefreshEnd();
 }
 
@@ -84,6 +84,10 @@ void jeu::action(int t) {
         int key = keyboard();
         if(key == ' ') {
             guy.saut(t);
+        }
+
+        if(key == 'g'){
+            guy.switch_gravity(t);
         }
     }
 }

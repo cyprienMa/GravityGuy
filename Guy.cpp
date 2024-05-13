@@ -6,6 +6,9 @@ using namespace Imagine;
 //On initialise un Guy au sol
 Guy::Guy() {
     t = -t_saut;
+    ts = -t_gravity;
+    state = true;
+    previous_state = true;
 }
 
 //On actualise la valeur de t quand le Guy saute
@@ -18,29 +21,56 @@ bool Guy::check_saut(int t0) const {
     return t<=t0 && t0<=t+t_saut;
 }
 
+//Si le guy est sol "state = true". S'il est au plafond "state = false"
 void Guy::switch_gravity(int t0) {
     ts = t0;
+    previous_state = state;
     state = !state;
 }
 
+//On vérifie que le guy n'est pas en train de changer d'état
 bool Guy::check_gravity(int t0) const {
     return ts<=t0 && t0<=ts+t_gravity;
 }
 
 //Si le Guy est en train de sauter, alors on calcule sa hauteur
 int Guy::hauteur(int t0) const {
-    float H = 0;
+    float H;
     if(check_saut(t0)) {
-        float x = 1-2*(t0-t)/(float)t_saut;  //La trajectoire du Guy suit une parabole ce qui nous donne sa hauteur
-        H=h_saut*(1-x*x);
+        if (state){
+            float x = 1-2*(t0-t)/(float)t_saut;  //La trajectoire du Guy suit une parabole ce qui nous donne sa hauteur
+            H = h - h_saut*(1-x*x) - hGuy;
+        }
+
+        if (!state){
+            float x = 1-2*(t0-t)/(float)t_saut;  //La trajectoire du Guy suit une parabole ce qui nous donne sa hauteur
+            H = h_saut*(1-x*x);
+        }
     }
+    else{
+        if(check_gravity(t0)) {
+            if (previous_state){
+                H = (hGuy-h)*t0/t_gravity + (h-hGuy)*(1+ts/t_gravity);
+            }
 
-    if(state){
-        if(check_gravity(t0)){
+            if (!previous_state){
+                H = (h-hGuy)*t0/t_gravity - ts*(h-hGuy)/t_gravity;
+            }
+        }
 
+        else {
+            if (state){
+                H = h - hGuy;
+            }
+
+            if (!state){
+                H = 0;
+            }
+        }
     }
     return H;
 }
+
 
 void obstacle::set(int t, int x) {
     tInit=t;
