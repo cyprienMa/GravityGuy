@@ -9,8 +9,11 @@ using namespace std;
 #include "jeu.h"
 
 int main(){
-    openWindow(w,h);
+
     jeu J;
+    J.menu();
+
+    Window gameWindow = openWindow(w, h, "Gravity Guy");
     int t=0;
     for(t=0; true; t++) {
         J.dessin(t);

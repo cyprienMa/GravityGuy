@@ -9,10 +9,11 @@ class jeu{
     Guy guy;
 
     //On crée un tableau pour les premiers obstacles du jeu (Les triangles)
-    obstacle T[n_obstacle*2];
+    obstacle T[n_obstacle*3];
 
 public:
     jeu();
     void dessin(int t) const;
     void action(int t);
+    void menu();
 };

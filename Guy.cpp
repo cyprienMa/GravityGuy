@@ -71,11 +71,31 @@ int Guy::hauteur(int t0) const {
     return H;
 }
 
+bool Guy::check_state(int t0) const{
+    return state;
+}
+
+bool Guy::collision(obstacle t, int t0) const {
+
+    int c = t.center_1(t0);
+    int h = hauteur(t0);
+    int d2 = (h>h_obstacle/2)? (h-h_obstacle/2)*(h-h_obstacle/2): 0;
+    if(c<xGuy) {
+        c -= xGuy;
+        d2 += c*c;
+    } else if(xGuy+wGuy<c) {
+        c -= xGuy+wGuy;
+        d2 += c*c;
+    }
+    return 4*d2<h_obstacle*h_obstacle;
+}
 
 void obstacle::set(int t, int x) {
     tInit=t;
     xInit=x;
 }
+
+
 //On initialise les paramètres de l'obstacle: t=0 et x=10001
 obstacle::obstacle() {
     set(0, 1000);

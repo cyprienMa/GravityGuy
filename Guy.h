@@ -24,6 +24,18 @@ const int v3 = 1.25*vitesse;
 const int h_obstacle = 3*hGuy/4;
 
 
+
+
+class obstacle{
+    int tInit, xInit;
+public:
+    obstacle();
+    void set(int t, int x);
+    int center_1(int t) const;
+    int center_2(int t) const;
+    int center_3(int t) const;
+};
+
 class Guy{
     int t; //Date du début du dernier saut du Guy
     int ts; //Date du début du dernier switch de gravité du Guy
@@ -36,16 +48,8 @@ public:
 
     bool check_saut(int t0) const;
     bool check_gravity(int t0) const;
+    bool check_state(int t0) const;
 
     int hauteur(int t0) const;
-};
-
-class obstacle{
-    int tInit, xInit;
-public:
-    obstacle();
-    void set(int t, int x);
-    int center_1(int t) const;
-    int center_2(int t) const;
-    int center_3(int t) const;
+     bool collision( obstacle T, int t0) const ;
 };
