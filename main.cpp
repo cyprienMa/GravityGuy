@@ -21,7 +21,7 @@ int main(){
     if (!load(img,srcPath("ville.jpg")))
         return 0;
 
-    Window gameWindow = openWindow(img.width(), img.height(), "Gravity Guy");
+    Window gameWindow = openWindow(w, h);
     display(img);
 
     int t=0;
