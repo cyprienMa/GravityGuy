@@ -27,39 +27,44 @@ jeu::jeu(){
 
     T[0].set(0, w);
     for(int i=1; i<n_obstacle; i++){
-        int coef = intRandom(150,300);
+        int coef = intRandom(300,600);
         T[i].set(0, T[i-1].center_1(0) + coef);
     }
 
     //Création de la seconde phase d'obstacles, les losanges
     T[n_obstacle].set(0, T[n_obstacle -1].center_1(0) + d_min_12);
     for(int i=n_obstacle+1; i<2*n_obstacle; i++){
-        int coef = intRandom(150,300);
+        int coef = intRandom(300,600);
         T[i].set(0, T[i-1].center_2(0) + coef);
     }
 
     //Création de la troisième phase d'obstacles, les cercles
     //On s'assure que les obstacles ne se superposent pas
-    float delta_t_23 = w/v2 + (n_obstacle-1)*300/v2 + d_min_12/v2 + (n_obstacle-1)*300/v2;
+    float delta_t_23 = w/v2 + (n_obstacle-1)*600/v2 + d_min_12/v2 + (n_obstacle-1)*600/v2;
     float d_min_23 = (v3-v2)*delta_t_23;
 
     T[2*n_obstacle].set(0, T[2*n_obstacle -1].center_2(0) + d_min_23);
     for(int i=2*n_obstacle+1; i<3*n_obstacle; i++){
-        int coef = intRandom(150,300);
+        int coef = intRandom(300,600);
         T[i].set(0, T[i-1].center_3(0) + coef);
     }
-    T[3*n_obstacle].set(0, w);
-    for(int i=3*n_obstacle+1; i<4*n_obstacle; i++){
-        int coef = intRandom(150,300);
-        T[i].set(0, T[i-1].center_1(0) + coef);
+
+    // ######## NIVEAU 2 ########//
+    //Création de la 4eme phase d'obstacles, les triangles du haut
+    for(int i=3*n_obstacle; i<4*n_obstacle; i++){
+       T[i].set(0, 2*w+i*300);
     }
 
+    //Création de la 5eme phase d'obstacles, les losanges du haut
+    for(int i=4*n_obstacle; i<5*n_obstacle; i++){
+       T[i].set(0, 3*w+i*300);
+    }
 }
 void jeu::dessin(int t) const {
     noRefreshBegin();
     clearWindow();
-    int image_width_window = 500;
-    int image_height_window = 300;
+    int image_width_window = 1000;
+    int image_height_window = 600;
     byte* rgb;
 
     loadColorImage(srcPath("ville.jpg"), rgb, image_width_window, image_height_window);
@@ -69,29 +74,36 @@ void jeu::dessin(int t) const {
 
     //On dessine l'obstacle_1 (Triangles)
     for(int i=0; i< n_obstacle; i++){
-        drawLine(T[i].center_1(t), h-h_obstacle, T[i].center_1(t)+h_obstacle/sqrt(3), h, ORANGE, 3);
-        drawLine(T[i].center_1(t)+h_obstacle/sqrt(3), h, T[i].center_1(t)-h_obstacle/sqrt(3), h, ORANGE, 3);
-        drawLine(T[i].center_1(t)-h_obstacle/sqrt(3), h, T[i].center_1(t), h-h_obstacle, ORANGE, 3);
+        drawLine(T[i].center_1(t), h-h_obstacle-e_b, T[i].center_1(t)+h_obstacle/sqrt(3), h-e_b, ORANGE, 3);
+        drawLine(T[i].center_1(t)+h_obstacle/sqrt(3), h-e_b, T[i].center_1(t)-h_obstacle/sqrt(3), h-e_b, ORANGE, 3);
+        drawLine(T[i].center_1(t)-h_obstacle/sqrt(3), h-e_b, T[i].center_1(t), h-h_obstacle-e_b, ORANGE, 3);
     }
 
     //On dessine les obstacles de la phase 2 (Losanges)
     for(int i=n_obstacle; i< 2*n_obstacle; i++){
-        drawLine(T[i].center_2(t), h-h_obstacle, T[i].center_2(t)+h_obstacle/2, h-h_obstacle/2, RED, 3);
-        drawLine(T[i].center_2(t)+h_obstacle/2, h-h_obstacle/2, T[i].center_2(t), h, RED, 3);
-        drawLine(T[i].center_2(t), h, T[i].center_2(t)-h_obstacle/2, h-h_obstacle/2, RED,3);
-        drawLine(T[i].center_2(t)-h_obstacle/2, h-h_obstacle/2, T[i].center_2(t), h-h_obstacle, RED, 3);
+        drawLine(T[i].center_2(t), h-h_obstacle-e_b, T[i].center_2(t)+h_obstacle/2, h-h_obstacle/2-e_b, RED, 3);
+        drawLine(T[i].center_2(t)+h_obstacle/2, h-h_obstacle/2-e_b, T[i].center_2(t), h-e_b, RED, 3);
+        drawLine(T[i].center_2(t), h-e_b, T[i].center_2(t)-h_obstacle/2, h-h_obstacle/2-e_b, RED,3);
+        drawLine(T[i].center_2(t)-h_obstacle/2, h-h_obstacle/2-e_b, T[i].center_2(t), h-h_obstacle-e_b, RED, 3);
     }
 
     //On dessine les obstacles de la phase 3 (Cercles)
     for(int i=2*n_obstacle; i< 3*n_obstacle; i++){
-        fillCircle(T[i].center_3(t), h-h_obstacle/2, h_obstacle/2, BLUE);
+        fillCircle(T[i].center_3(t), h-h_obstacle/2-e_b, h_obstacle/2, BLUE);
     }
+
+    //On dessine les obstacles de la phase 4 (Triangles du haut)
     for(int i=3*n_obstacle; i< 4*n_obstacle; i++){
-        drawLine(T[i].center_1(t), h_obstacle, T[i].center_1(t)+h_obstacle/2, h_obstacle/2, RED, 3);
-        drawLine(T[i].center_1(t)+h_obstacle/2, h_obstacle/2, T[i].center_1(t), 0, RED, 3);
-        drawLine(T[i].center_1(t), 0, T[i].center_1(t)-h_obstacle/2, h_obstacle/2, RED,3);
-        drawLine(T[i].center_1(t)-h_obstacle/2, h_obstacle/2, T[i].center_1(t), h_obstacle, RED, 3);
+        drawLine(T[i].center_1(t), h_obstacle+e_h, T[i].center_1(t)+h_obstacle/sqrt(3), e_h, ORANGE, 3);
+        drawLine(T[i].center_1(t)-h_obstacle/sqrt(3), e_h, T[i].center_1(t),h_obstacle+e_h, ORANGE, 3);
+        drawLine(T[i].center_1(t)-h_obstacle/sqrt(3), e_h, T[i].center_1(t)+h_obstacle/sqrt(3), e_h, ORANGE, 3);
     }
+
+    //Le rectangle du haut et du bas
+    fillRect(0,0,w,e_h,YELLOW);
+    fillRect(0,h-e_b,w,e_b, YELLOW);
+
+
     //On dessine le guy
     int image_width = 10;
     int image_height = 10;
@@ -104,21 +116,21 @@ void jeu::dessin(int t) const {
     NativeBitmap my_native_bitmap_bis(image_width, image_height);
     my_native_bitmap_bis.setColorImage(0,0,rgb,image_width, image_height);
 
-    loadColorImage(srcPath("boom_2.jpg"), rgb, image_width, image_height);
+    loadColorImage(srcPath("boom.jpg"), rgb, image_width, image_height);
     NativeBitmap my_native_bitmap_boom(image_width, image_height);
     my_native_bitmap_boom.setColorImage(0,0,rgb,image_width, image_height);
 
     delete[] rgb;
 
     if (guy.check_state(t)){
-        putNativeBitmap(xGuy, guy.hauteur(t), my_native_bitmap);
+        putNativeBitmap(xGuy, guy.hauteur_1(t), my_native_bitmap);
     }
     else{
-        putNativeBitmap(xGuy, guy.hauteur(t), my_native_bitmap_bis);
+        putNativeBitmap(xGuy, guy.hauteur_1(t), my_native_bitmap_bis);
     }
 
     if (guy.collision(T,t)){
-        putNativeBitmap(xGuy, guy.hauteur(t)-2, my_native_bitmap_boom);
+        putNativeBitmap(xGuy, guy.hauteur_1(t), my_native_bitmap_boom);
     }
 
     noRefreshEnd();

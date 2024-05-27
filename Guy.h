@@ -1,11 +1,11 @@
 #pragma once
 #include <random>
-int const w = 500;
-int const h = 300;
+int const w = 1000;
+int const h = 600;
 
 // Dimensions et position du Guy
-const int wGuy = 20;
-const int hGuy = 30;
+const int wGuy = 60;
+const int hGuy = 60;
 const int xGuy = 25;
 
 //Durée du saut
@@ -21,9 +21,13 @@ const int v2 = 1.10*vitesse;
 const int v3 = 1.25*vitesse;
 
 //Hauteur d'un obstacle
-const int h_obstacle = 3*hGuy/4;
+const int h_obstacle =  60;
 //Nombre d'obstacle sur la fenêtre
-const int n_obstacle = 15;
+const int n_obstacle = 3;
+
+//Epaisseur du haut et du bas
+const int e_h = 20;
+const int e_b = 20;
 
 
 class obstacle{
@@ -50,6 +54,6 @@ public:
     bool check_gravity(int t0) const;
     bool check_state(int t0) const;
 
-    float hauteur(int t0) const;
+    float hauteur_1(int t0) const;
     bool collision(const obstacle t[], int t0) const;
 };

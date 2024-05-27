@@ -24,6 +24,7 @@ int main(){
         milliSleep(20);
         J.action(t);
         if(J.collision(t)){
+            std::cout<< t<<std::endl;
             break;
         }
     }

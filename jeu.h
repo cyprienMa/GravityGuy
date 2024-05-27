@@ -5,8 +5,9 @@ class jeu{
     //Le Guy du jeu
     Guy guy;
 
-    //On crée un tableau pour les premiers obstacles du jeu (Les triangles)
-    obstacle T[n_obstacle*4];
+    //On crée un tableau pour les obstacles
+    obstacle T[n_obstacle*6];
+    obstacle Rect_haut;
 
 public:
     jeu();

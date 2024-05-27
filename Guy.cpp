@@ -35,37 +35,37 @@ bool Guy::check_gravity(int t0) const {
 }
 
 //Si le Guy est en train de sauter, alors on calcule sa hauteur
-float Guy::hauteur(int t0) const {
+float Guy::hauteur_1(int t0) const {
     float H;
     if(check_saut(t0)) {
         if (state){
-            float x = 1-2*(t0-t)/(float)t_saut;  //La trajectoire du Guy suit une droite ce qui nous donne sa hauteur
-            H = h - h_saut*(1-x*x) - hGuy;
+            float x = 1-2*(t0-t)/(float)t_saut;  //La trajectoire du Guy suit une parabole ce qui nous donne sa hauteur
+            H = h - h_saut*(1-x*x) - hGuy - e_b;
         }
 
         if (!state){
-            float x = 1-2*(t0-t)/(float)t_saut;  //La trajectoire du Guy suit une droite ce qui nous donne sa hauteur
-            H = h_saut*(1-x*x);
+            float x = 1-2*(t0-t)/(float)t_saut;  //La trajectoire du Guy suit une parabole ce qui nous donne sa hauteur
+            H = h_saut*(1-x*x) + e_h;
         }
     }
     else{
         if(check_gravity(t0)) {
                     if (previous_state){
-                        H = (hGuy-h)*t0/(float)t_gravity + (h-hGuy)*(1+ts/(float)t_gravity);
+                        H = (hGuy-h+e_h+e_b)*t0/(float)t_gravity + e_h - (hGuy-h+e_h+e_b)*(1+ts/(float)t_gravity);
                     }
 
                     else{
-                        H = (h-hGuy)*t0/(float)t_gravity - ts*(h-hGuy)/(float)t_gravity;
+                        H = (h-hGuy-e_h-e_b)*t0/(float)t_gravity - (h-hGuy-e_h-e_b)*(1+ts/(float)t_gravity) + (h-hGuy-e_b);
                     }
                 }
 
         else {
             if (state){
-                H = h - 1.25*hGuy;
+                H = h - hGuy - e_b;
             }
 
             else{
-                H = 0;
+                H = e_h;
             }
         }
     }
@@ -88,7 +88,7 @@ obstacle::obstacle() {
 }
 
 //Renvoie le centre de l'obstacle de la première phase
-int obstacle::center_1(int t) const {
+int obstacle:: center_1(int t) const {
     return xInit-(t-tInit)*vitesse;
 }
 
@@ -103,22 +103,37 @@ int obstacle::center_3(int t) const {
 }
 
 bool Guy::collision(const obstacle t[n_obstacle*4], int t0) const {
+    //Collision avec les triangles et le plafond
     for (int i = 0; i < n_obstacle; i++){
-        if ((float(abs(xGuy+wGuy-t[i].center_1(t0))) < 5) and (float(abs(hauteur(t0)+hGuy-h+h_obstacle) < 20))){
+        if ((float(abs(xGuy+wGuy-t[i].center_1(t0))) < 15) and (float(abs(hauteur_1(t0)-h+h_obstacle) < 60))){
             return true;
         }
     }
 
+    //Collision avec les losanges
     for (int i = n_obstacle; i < n_obstacle*2; i++){
-        if ((float(abs(xGuy+wGuy-t[i].center_2(t0))) < 5) and (float(abs(hauteur(t0)+hGuy-h+h_obstacle) < 20))){
+        if ((float(abs(xGuy+wGuy-t[i].center_2(t0))) < 15) and (float(abs(hauteur_1(t0)-h+h_obstacle) < 60))){
             return true;
         }
     }
 
+    //Collision avec les cercles
     for (int i = 2*n_obstacle; i < 3*n_obstacle; i++){
-        if ((float(abs(xGuy+wGuy-t[i].center_3(t0))) < 5) and (float(abs(hauteur(t0)+hGuy-h+h_obstacle) < 20))){
+        if ((float(abs(xGuy+wGuy-t[i].center_3(t0))) < 15) and (float(abs(hauteur_1(t0)-h+h_obstacle)) < 60)){
             return true;
         }
+    }
+
+    //Collision avec les triangles du haut
+    for (int i = 3*n_obstacle; i < 4*n_obstacle; i++){
+        if ((float(abs(xGuy+wGuy-t[i].center_1(t0))) < 15) and (float(abs(hauteur_1(t0)-h_obstacle) < 25))){
+            return true;
+        }
+    }
+
+    //Collision avec le plafond lors de la phase 1
+    if (abs(hauteur_1(t0)-e_h) < 1){
+        return true;
     }
     return false;
 }
