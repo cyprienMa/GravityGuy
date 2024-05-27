@@ -58,6 +58,14 @@ jeu::jeu(){
 void jeu::dessin(int t) const {
     noRefreshBegin();
     clearWindow();
+    int image_width_window = 500;
+    int image_height_window = 300;
+    byte* rgb;
+
+    loadColorImage(srcPath("ville.jpg"), rgb, image_width_window, image_height_window);
+    NativeBitmap my_native_bitmap_ville(image_width_window, image_height_window);
+    my_native_bitmap_ville.setColorImage(0,0,rgb,image_width_window, image_height_window);
+    putNativeBitmap(0, 0, my_native_bitmap_ville);
 
     //On dessine l'obstacle_1 (Triangles)
     for(int i=0; i< n_obstacle; i++){
@@ -87,7 +95,7 @@ void jeu::dessin(int t) const {
     //On dessine le guy
     int image_width = 10;
     int image_height = 10;
-    byte* rgb;
+
     loadColorImage(srcPath("guy_blanc_petit.jpg"), rgb, image_width, image_height);
     NativeBitmap my_native_bitmap(image_width, image_height);
     my_native_bitmap.setColorImage(0,0,rgb,image_width, image_height);
@@ -96,7 +104,7 @@ void jeu::dessin(int t) const {
     NativeBitmap my_native_bitmap_bis(image_width, image_height);
     my_native_bitmap_bis.setColorImage(0,0,rgb,image_width, image_height);
 
-    loadColorImage(srcPath("boom_petit.jpg"), rgb, image_width, image_height);
+    loadColorImage(srcPath("boom_2.jpg"), rgb, image_width, image_height);
     NativeBitmap my_native_bitmap_boom(image_width, image_height);
     my_native_bitmap_boom.setColorImage(0,0,rgb,image_width, image_height);
 
@@ -110,7 +118,7 @@ void jeu::dessin(int t) const {
     }
 
     if (guy.collision(T,t)){
-        putNativeBitmap(xGuy, guy.hauteur(t), my_native_bitmap_boom);
+        putNativeBitmap(xGuy, guy.hauteur(t)-2, my_native_bitmap_boom);
     }
 
     noRefreshEnd();

@@ -16,13 +16,7 @@ typedef Image<byte> Img;
 int main(){
     jeu J;
     J.menu();
-
-    Img img;
-    if (!load(img,srcPath("ville.jpg")))
-        return 0;
-
     Window gameWindow = openWindow(w, h);
-    display(img);
 
     int t=0;
     for(t=0; true; t++){
