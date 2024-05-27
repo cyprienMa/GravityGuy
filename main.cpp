@@ -15,17 +15,30 @@ typedef Image<byte> Img;
 
 int main(){
     jeu J;
-    J.menu();
-    Window gameWindow = openWindow(w, h);
+    int Level = J.menu();
 
-    int t=0;
-    for(t=0; true; t++){
-        J.dessin(t);
-        milliSleep(20);
-        J.action(t);
-        if(J.collision(t)){
-            std::cout<< t<<std::endl;
-            break;
+    Window gameWindow = openWindow(w, h);
+    if (Level==1){
+        int t=0;
+        for(t=0; true; t++){
+            J.dessin(t);
+            milliSleep(20);
+            J.action(t);
+            if(J.collision(t)){
+                break;
+            }
+        }
+    }
+
+    if (Level==2){
+        int t=0;
+        for(t=0; true; t++){
+            J.dessin2(t);
+            milliSleep(20);
+            J.action(t);
+            if(J.collision2(t)){
+                break;
+            }
         }
     }
     endGraphics();

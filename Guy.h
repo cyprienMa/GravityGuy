@@ -20,6 +20,11 @@ const int vitesse = 8;
 const int v2 = 1.10*vitesse;
 const int v3 = 1.25*vitesse;
 
+//Vitesse du jeu pour le niveau 2
+const int vitesse_2 = 14;
+const int v2_2 = 1.10*vitesse_2;
+const int v3_2 = 1.25*vitesse_2;
+
 //Hauteur d'un obstacle
 const int h_obstacle =  60;
 //Nombre d'obstacle sur la fenêtre
@@ -38,6 +43,10 @@ public:
     int center_1(int t) const;
     int center_2(int t) const;
     int center_3(int t) const;
+
+    int center_1_2(int t) const;
+    int center_2_2(int t) const;
+    int center_3_2(int t) const;
 };
 
 class Guy{
@@ -56,4 +65,5 @@ public:
 
     float hauteur_1(int t0) const;
     bool collision(const obstacle t[], int t0) const;
+    bool collision2(const obstacle t[], int t0) const;
 };

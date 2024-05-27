@@ -6,13 +6,15 @@ class jeu{
     Guy guy;
 
     //On crée un tableau pour les obstacles
-    obstacle T[n_obstacle*6];
+    obstacle T[n_obstacle*5 + 1];
     obstacle Rect_haut;
 
 public:
     jeu();
     void dessin(int t) const;
+    void dessin2(int t) const; //Pour le niveau 2
     void action(int t);
-    void menu();
+    int menu();
     bool collision(int t) const;
+    bool collision2(int t) const;//Pour le niveau 2
 };
