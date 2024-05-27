@@ -22,8 +22,8 @@ const int v3 = 1.25*vitesse;
 
 //Hauteur d'un obstacle
 const int h_obstacle = 3*hGuy/4;
-
-
+//Nombre d'obstacle sur la fenêtre
+const int n_obstacle = 15;
 
 
 class obstacle{
@@ -50,6 +50,6 @@ public:
     bool check_gravity(int t0) const;
     bool check_state(int t0) const;
 
-    int hauteur(int t0) const;
-     bool collision( obstacle T, int t0) const ;
+    float hauteur(int t0) const;
+    bool collision(const obstacle t[], int t0) const;
 };

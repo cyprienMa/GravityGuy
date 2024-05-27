@@ -95,7 +95,13 @@ void jeu::dessin(int t) const {
     loadColorImage(srcPath("guy_blanc_petit_upside.jpg"), rgb, image_width, image_height);
     NativeBitmap my_native_bitmap_bis(image_width, image_height);
     my_native_bitmap_bis.setColorImage(0,0,rgb,image_width, image_height);
+
+    loadColorImage(srcPath("boom_petit.jpg"), rgb, image_width, image_height);
+    NativeBitmap my_native_bitmap_boom(image_width, image_height);
+    my_native_bitmap_boom.setColorImage(0,0,rgb,image_width, image_height);
+
     delete[] rgb;
+
     if (guy.check_state(t)){
         putNativeBitmap(xGuy, guy.hauteur(t), my_native_bitmap);
     }
@@ -103,8 +109,9 @@ void jeu::dessin(int t) const {
         putNativeBitmap(xGuy, guy.hauteur(t), my_native_bitmap_bis);
     }
 
-
-
+    if (guy.collision(T,t)){
+        putNativeBitmap(xGuy, guy.hauteur(t), my_native_bitmap_boom);
+    }
 
     noRefreshEnd();
 }
@@ -122,6 +129,13 @@ void jeu::action(int t) {
             guy.switch_gravity(t);
         }
     }
+}
+
+bool jeu::collision(int t) const{
+    if (guy.collision(T,t)){
+        return true;
+    }
+    return false;
 }
 
 void jeu::menu(){
@@ -155,3 +169,6 @@ void jeu::menu(){
     }
 
 }
+
+
+

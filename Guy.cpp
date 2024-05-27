@@ -1,4 +1,5 @@
 #include "Guy.h"
+#include "jeu.h"
 #include <Imagine/Graphics.h>
 #include <algorithm>
 using namespace Imagine;
@@ -34,36 +35,36 @@ bool Guy::check_gravity(int t0) const {
 }
 
 //Si le Guy est en train de sauter, alors on calcule sa hauteur
-int Guy::hauteur(int t0) const {
+float Guy::hauteur(int t0) const {
     float H;
     if(check_saut(t0)) {
         if (state){
-            float x = 1-2*(t0-t)/(float)t_saut;  //La trajectoire du Guy suit une parabole ce qui nous donne sa hauteur
+            float x = 1-2*(t0-t)/(float)t_saut;  //La trajectoire du Guy suit une droite ce qui nous donne sa hauteur
             H = h - h_saut*(1-x*x) - hGuy;
         }
 
         if (!state){
-            float x = 1-2*(t0-t)/(float)t_saut;  //La trajectoire du Guy suit une parabole ce qui nous donne sa hauteur
+            float x = 1-2*(t0-t)/(float)t_saut;  //La trajectoire du Guy suit une droite ce qui nous donne sa hauteur
             H = h_saut*(1-x*x);
         }
     }
     else{
         if(check_gravity(t0)) {
-            if (previous_state){
-                H = (hGuy-h)*t0/t_gravity + (h-hGuy)*(1+ts/t_gravity);
-            }
+                    if (previous_state){
+                        H = (hGuy-h)*t0/(float)t_gravity + (h-hGuy)*(1+ts/(float)t_gravity);
+                    }
 
-            if (!previous_state){
-                H = (h-hGuy)*t0/t_gravity - ts*(h-hGuy)/t_gravity;
-            }
-        }
+                    else{
+                        H = (h-hGuy)*t0/(float)t_gravity - ts*(h-hGuy)/(float)t_gravity;
+                    }
+                }
 
         else {
             if (state){
-                H = h - hGuy;
+                H = h - 1.25*hGuy;
             }
 
-            if (!state){
+            else{
                 H = 0;
             }
         }
@@ -73,21 +74,6 @@ int Guy::hauteur(int t0) const {
 
 bool Guy::check_state(int t0) const{
     return state;
-}
-
-bool Guy::collision(obstacle t, int t0) const {
-
-    int c = t.center_1(t0);
-    int h = hauteur(t0);
-    int d2 = (h>h_obstacle/2)? (h-h_obstacle/2)*(h-h_obstacle/2): 0;
-    if(c<xGuy) {
-        c -= xGuy;
-        d2 += c*c;
-    } else if(xGuy+wGuy<c) {
-        c -= xGuy+wGuy;
-        d2 += c*c;
-    }
-    return 4*d2<h_obstacle*h_obstacle;
 }
 
 void obstacle::set(int t, int x) {
@@ -116,3 +102,23 @@ int obstacle::center_3(int t) const {
     return xInit-(t-tInit)*v3;
 }
 
+bool Guy::collision(const obstacle t[n_obstacle*4], int t0) const {
+    for (int i = 0; i < n_obstacle; i++){
+        if ((float(abs(xGuy+wGuy-t[i].center_1(t0))) < 5) and (float(abs(hauteur(t0)+hGuy-h+h_obstacle) < 20))){
+            return true;
+        }
+    }
+
+    for (int i = n_obstacle; i < n_obstacle*2; i++){
+        if ((float(abs(xGuy+wGuy-t[i].center_2(t0))) < 5) and (float(abs(hauteur(t0)+hGuy-h+h_obstacle) < 20))){
+            return true;
+        }
+    }
+
+    for (int i = 2*n_obstacle; i < 3*n_obstacle; i++){
+        if ((float(abs(xGuy+wGuy-t[i].center_3(t0))) < 5) and (float(abs(hauteur(t0)+hGuy-h+h_obstacle) < 20))){
+            return true;
+        }
+    }
+    return false;
+}
