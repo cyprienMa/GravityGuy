@@ -11,6 +11,7 @@ const int xGuy = 25;
 //Durée du saut
 const int t_saut = 20;
 //Hauteur du saut
+const int h_saut_facile = 4*hGuy;
 const int h_saut = 3*hGuy;
 //Durée du changement de gravité
 const int t_gravity = 20;
@@ -64,6 +65,7 @@ public:
     bool check_state(int t0) const;
 
     float hauteur_1(int t0) const;
+    float hauteur_2(int t0) const;
     bool collision(const obstacle t[], int t0) const;
     bool collision2(const obstacle t[], int t0) const;
 };

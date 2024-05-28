@@ -32,7 +32,7 @@ jeu::jeu(){
     }
 
     //Création de la seconde phase d'obstacles, les losanges
-    T[n_obstacle].set(0, T[n_obstacle -1].center_1(0) + d_min_12 + 100);
+    T[n_obstacle].set(0, T[n_obstacle -1].center_1(0) + d_min_12 + 200);
     for(int i=n_obstacle+1; i<2*n_obstacle; i++){
         int coef = intRandom(300,600);
         T[i].set(0, T[i-1].center_2(0) + coef);
@@ -64,7 +64,7 @@ void jeu::dessin(int t) const {
     int image_height_window = 600;
     byte* rgb;
 
-    loadColorImage(srcPath("ville.jpg"), rgb, image_width_window, image_height_window);
+    loadColorImage(srcPath("ville_strip.png"), rgb, image_width_window, image_height_window);
     NativeBitmap my_native_bitmap_ville(image_width_window, image_height_window);
     my_native_bitmap_ville.setColorImage(0,0,rgb,image_width_window, image_height_window);
     putNativeBitmap(0, 0, my_native_bitmap_ville);
@@ -113,15 +113,15 @@ void jeu::dessin(int t) const {
     int image_width = 10;
     int image_height = 10;
 
-    loadColorImage(srcPath("guy_blanc_petit.jpg"), rgb, image_width, image_height);
+    loadColorImage(srcPath("guy_strip.png"), rgb, image_width, image_height);
     NativeBitmap my_native_bitmap(image_width, image_height);
     my_native_bitmap.setColorImage(0,0,rgb,image_width, image_height);
 
-    loadColorImage(srcPath("guy_blanc_petit_upside.jpg"), rgb, image_width, image_height);
+    loadColorImage(srcPath("guy_upside_strip.png"), rgb, image_width, image_height);
     NativeBitmap my_native_bitmap_bis(image_width, image_height);
     my_native_bitmap_bis.setColorImage(0,0,rgb,image_width, image_height);
 
-    loadColorImage(srcPath("boom.jpg"), rgb, image_width, image_height);
+    loadColorImage(srcPath("boom_strip.png"), rgb, image_width, image_height);
     NativeBitmap my_native_bitmap_boom(image_width, image_height);
     my_native_bitmap_boom.setColorImage(0,0,rgb,image_width, image_height);
 
@@ -150,16 +150,17 @@ void jeu::dessin2(int t) const {
     int image_height_window = 600;
     byte* rgb;
 
-    loadColorImage(srcPath("ville.jpg"), rgb, image_width_window, image_height_window);
+    loadColorImage(srcPath("ville_strip.png"), rgb, image_width_window, image_height_window);
     NativeBitmap my_native_bitmap_ville(image_width_window, image_height_window);
     my_native_bitmap_ville.setColorImage(0,0,rgb,image_width_window, image_height_window);
     putNativeBitmap(0, 0, my_native_bitmap_ville);
 
     //On dessine l'obstacle_1 (Triangles)
     for(int i=0; i< n_obstacle; i++){
-        drawLine(T[i].center_1_2(t), h-h_obstacle-e_b, T[i].center_1_2(t)+h_obstacle/sqrt(3), h-e_b, ORANGE, 3);
-        drawLine(T[i].center_1_2(t)+h_obstacle/sqrt(3), h-e_b, T[i].center_1_2(t)-h_obstacle/sqrt(3), h-e_b, ORANGE, 3);
-        drawLine(T[i].center_1_2(t)-h_obstacle/sqrt(3), h-e_b, T[i].center_1_2(t), h-h_obstacle-e_b, ORANGE, 3);
+        loadColorImage(srcPath("triangle_strip.png"), rgb, image_width_window, image_height_window);
+        NativeBitmap my_native_bitmap_triangle(image_width_window, image_height_window);
+        my_native_bitmap_triangle.setColorImage(T[i].center_1_2(t)-h_obstacle/2.,h-e_b-h_obstacle,rgb,image_width_window, image_height_window);
+        putNativeBitmap(T[i].center_1_2(t)-h_obstacle/2.,h-e_b-h_obstacle, my_native_bitmap_triangle);
     }
 
     //On dessine les obstacles de la phase 2 (Losanges)
@@ -175,7 +176,16 @@ void jeu::dessin2(int t) const {
         fillCircle(T[i].center_3_2(t), h-h_obstacle/2-e_b, h_obstacle/2, BLUE);
     }
 
-    fillRect(T[3*n_obstacle].center_3_2(t), 400,100, 200,GREEN);
+
+    //On dessine l'obstacle qui impose le premier switch
+    int image_height_rect = 200;
+    int image_width_rect = 100;
+
+    loadColorImage(srcPath("rect_strip.png"), rgb, image_width_rect, image_height_rect);
+    NativeBitmap my_native_bitmap_rect(image_width_rect, image_height_rect);
+    my_native_bitmap_rect.setColorImage(T[3*n_obstacle].center_3_2(t), 400,rgb,image_width_rect, image_height_rect);
+    putNativeBitmap(T[3*n_obstacle].center_3_2(t), 400, my_native_bitmap_rect);
+
 
     //On dessine les obstacles de la phase 4 (Triangles du haut)
     for(int i=3*n_obstacle; i< 4*n_obstacle; i++){
@@ -186,42 +196,70 @@ void jeu::dessin2(int t) const {
 
     //Le rectangle du haut et du bas
     if (T[3*n_obstacle].center_3_2(t) >= xGuy + wGuy + 20){
-        fillRect(0,0,w,e_h,YELLOW); //Plafond dangereux
-        fillRect(0,h-e_b,w,e_b, CYAN); //Sol pas dangereux
+
+        int image_height_lava = e_h;
+        int image_width_lava = 1000;
+
+        loadColorImage(srcPath("sol_rouge_strip.png"), rgb, image_width_lava, image_height_lava);
+        NativeBitmap my_native_bitmap_lava(image_width_lava, image_height_lava);
+        my_native_bitmap_lava.setColorImage(0,0,rgb,image_width_lava, image_height_lava);
+        putNativeBitmap(0, 0, my_native_bitmap_lava);
+
+        loadColorImage(srcPath("sol_bleu_strip.png"), rgb, image_width_lava, image_height_lava);
+        NativeBitmap my_native_bitmap_sol(image_width_lava, image_height_lava);
+        my_native_bitmap_sol.setColorImage(0,h-e_h,rgb,image_width_lava, image_height_lava);
+        putNativeBitmap(0, h-e_h, my_native_bitmap_sol);
+
     }
 
     if (T[3*n_obstacle].center_3_2(t) < xGuy + wGuy + 20){
-        fillRect(0,0,w,e_h,CYAN); //Plafond pas dangereux
-        fillRect(0,h-e_b,w,e_b, YELLOW); //Sol dangereux
+        int image_height_lava = e_h;
+        int image_width_lava = 1000;
+
+        loadColorImage(srcPath("sol_rouge_strip.png"), rgb, image_width_lava, image_height_lava);
+        NativeBitmap my_native_bitmap_lava(image_width_lava, image_height_lava);
+        my_native_bitmap_lava.setColorImage(0,h-e_h,rgb,image_width_lava, image_height_lava);
+        putNativeBitmap(0, h-e_h, my_native_bitmap_lava);
+
+        loadColorImage(srcPath("sol_bleu_strip.png"), rgb, image_width_lava, image_height_lava);
+        NativeBitmap my_native_bitmap_sol(image_width_lava, image_height_lava);
+        my_native_bitmap_sol.setColorImage(0,0,rgb,image_width_lava, image_height_lava);
+        putNativeBitmap(0, 0, my_native_bitmap_sol);
+
+    }
+
+    if ( (T[3*n_obstacle].center_3_2(t) < 800) and (T[3*n_obstacle].center_3_2(t) > 200)){
+        fillRect(300, 300, 280, 50, WHITE);
+        drawString(300 + 50, 300 + 22, "Get ready to SWITCH", BLACK, 20);
     }
 
     //On dessine le guy
     int image_width = 10;
     int image_height = 10;
 
-    loadColorImage(srcPath("guy_blanc_petit.jpg"), rgb, image_width, image_height);
+    loadColorImage(srcPath("guy_strip.png"), rgb, image_width, image_height);
     NativeBitmap my_native_bitmap(image_width, image_height);
     my_native_bitmap.setColorImage(0,0,rgb,image_width, image_height);
 
-    loadColorImage(srcPath("guy_blanc_petit_upside.jpg"), rgb, image_width, image_height);
+    loadColorImage(srcPath("guy_upside_strip.png"), rgb, image_width, image_height);
     NativeBitmap my_native_bitmap_bis(image_width, image_height);
     my_native_bitmap_bis.setColorImage(0,0,rgb,image_width, image_height);
 
-    loadColorImage(srcPath("boom.jpg"), rgb, image_width, image_height);
+    loadColorImage(srcPath("boom_strip.png"), rgb, image_width, image_height);
     NativeBitmap my_native_bitmap_boom(image_width, image_height);
     my_native_bitmap_boom.setColorImage(0,0,rgb,image_width, image_height);
 
     delete[] rgb;
 
     if (guy.check_state(t)){
-        putNativeBitmap(xGuy, guy.hauteur_1(t), my_native_bitmap);
+        putNativeBitmap(xGuy, guy.hauteur_2(t), my_native_bitmap);
     }
     else{
-        putNativeBitmap(xGuy, guy.hauteur_1(t), my_native_bitmap_bis);
+        putNativeBitmap(xGuy, guy.hauteur_2(t), my_native_bitmap_bis);
     }
 
     if (guy.collision2(T,t)){
-        putNativeBitmap(xGuy, guy.hauteur_1(t), my_native_bitmap_boom);
+        putNativeBitmap(xGuy, guy.hauteur_2(t), my_native_bitmap_boom);
     }
 
     noRefreshEnd();

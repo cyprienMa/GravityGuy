@@ -34,8 +34,49 @@ bool Guy::check_gravity(int t0) const {
     return ts<=t0 && t0<=ts+t_gravity;
 }
 
+//### Pour le niveau 1 ####
 //Si le Guy est en train de sauter, alors on calcule sa hauteur
 float Guy::hauteur_1(int t0) const {
+    float H;
+    if(check_saut(t0)) {
+        if (state){
+            float x = 1-2*(t0-t)/(float)t_saut;  //La trajectoire du Guy suit une parabole ce qui nous donne sa hauteur
+            H = h - h_saut_facile*(1-x*x) - hGuy - e_b;
+        }
+
+        if (!state){
+            float x = 1-2*(t0-t)/(float)t_saut;  //La trajectoire du Guy suit une parabole ce qui nous donne sa hauteur
+            H = h_saut_facile*(1-x*x) + e_h;
+        }
+    }
+    else{
+        if(check_gravity(t0)) {
+                    if (previous_state){
+                        H = (hGuy-h+e_h+e_b)*t0/(float)t_gravity + e_h - (hGuy-h+e_h+e_b)*(1+ts/(float)t_gravity);
+                    }
+
+                    else{
+                        H = (h-hGuy-e_h-e_b)*t0/(float)t_gravity - (h-hGuy-e_h-e_b)*(1+ts/(float)t_gravity) + (h-hGuy-e_b);
+                    }
+                }
+
+        else {
+            if (state){
+                H = h - hGuy - e_b;
+            }
+
+            else{
+                H = e_h;
+            }
+        }
+    }
+    return H;
+}
+
+
+// ### Poyr le niveau 2 ####
+//Si le Guy est en train de sauter, alors on calcule sa hauteur
+float Guy::hauteur_2(int t0) const {
     float H;
     if(check_saut(t0)) {
         if (state){
@@ -125,30 +166,30 @@ int obstacle::center_3_2(int t) const {
 
 
 bool Guy::collision(const obstacle t[n_obstacle*4], int t0) const {
-    //Collision avec les triangles et le plafond
+    //Collision avec les triangles
     for (int i = 0; i < n_obstacle; i++){
-        if ((float(abs(xGuy+wGuy-t[i].center_1(t0))) < 15) and (float(abs(hauteur_1(t0)-h+h_obstacle) < 60))){
+        if (((float(abs(xGuy+wGuy-t[i].center_1(t0))) < 15) and (float(abs(hauteur_1(t0)-h+h_obstacle) < 60))) or ((float(abs(xGuy-t[i].center_1(t0))) < 15) and (float(abs(hauteur_1(t0)-h+h_obstacle) < 60))) ){
             return true;
         }
     }
 
     //Collision avec les losanges
     for (int i = n_obstacle; i < n_obstacle*2; i++){
-        if ((float(abs(xGuy+wGuy-t[i].center_2(t0))) < 15) and (float(abs(hauteur_1(t0)-h+h_obstacle) < 60))){
+        if (((float(abs(xGuy+wGuy-t[i].center_2(t0))) < 15) and (float(abs(hauteur_1(t0)-h+h_obstacle) < 60))) or ((float(abs(xGuy-t[i].center_2(t0))) < 15) and (float(abs(hauteur_1(t0)-h+h_obstacle) < 60)))){
             return true;
         }
     }
 
     //Collision avec les cercles
     for (int i = 2*n_obstacle; i < 3*n_obstacle; i++){
-        if ((float(abs(xGuy+wGuy-t[i].center_3(t0))) < 15) and (float(abs(hauteur_1(t0)-h+h_obstacle)) < 60)){
+        if (((float(abs(xGuy+wGuy-t[i].center_3(t0))) < 15) and (float(abs(hauteur_1(t0)-h+h_obstacle)) < 60)) or ((float(abs(xGuy-t[i].center_3(t0))) < 15) and (float(abs(hauteur_1(t0)-h+h_obstacle) < 60)))){
             return true;
         }
     }
 
     //Collision avec les triangles du haut
     for (int i = 3*n_obstacle; i < 4*n_obstacle; i++){
-        if ((float(abs(xGuy+wGuy-t[i].center_1(t0))) < 15) and (float(abs(hauteur_1(t0)-h_obstacle) < 60))){
+        if (((float(abs(xGuy+wGuy-t[i].center_1(t0))) < 15) and (float(abs(hauteur_1(t0)-h_obstacle) < 60))) or ((float(abs(xGuy-t[i].center_1(t0))) < 15) and (float(abs(hauteur_1(t0)-h_obstacle) < 60)))){
             return true;
         }
     }
@@ -174,48 +215,48 @@ bool Guy::collision(const obstacle t[n_obstacle*4], int t0) const {
 }
 
 bool Guy::collision2(const obstacle t[n_obstacle*4], int t0) const {
-    //Collision avec les triangles et le plafond
+    //Collision avec les triangles
     for (int i = 0; i < n_obstacle; i++){
-        if ((float(abs(xGuy+wGuy-t[i].center_1_2(t0))) < 15) and (float(abs(hauteur_1(t0)-h+h_obstacle) < 60))){
+        if (((float(abs(xGuy+wGuy-t[i].center_1_2(t0))) < 15) and (float(abs(hauteur_2(t0)-h+h_obstacle) < 60))) or ((float(abs(xGuy-t[i].center_1_2(t0))) < 15) and (float(abs(hauteur_2(t0)-h+h_obstacle) < 60))) ){
             return true;
         }
     }
 
     //Collision avec les losanges
     for (int i = n_obstacle; i < n_obstacle*2; i++){
-        if ((float(abs(xGuy+wGuy-t[i].center_2_2(t0))) < 15) and (float(abs(hauteur_1(t0)-h+h_obstacle) < 60))){
+        if (((float(abs(xGuy+wGuy-t[i].center_2_2(t0))) < 15) and (float(abs(hauteur_2(t0)-h+h_obstacle) < 60))) or ((float(abs(xGuy-t[i].center_2_2(t0))) < 15) and (float(abs(hauteur_2(t0)-h+h_obstacle) < 60)))){
             return true;
         }
     }
 
     //Collision avec les cercles
     for (int i = 2*n_obstacle; i < 3*n_obstacle; i++){
-        if ((float(abs(xGuy+wGuy-t[i].center_3_2(t0))) < 15) and (float(abs(hauteur_1(t0)-h+h_obstacle)) < 60)){
+        if (((float(abs(xGuy+wGuy-t[i].center_3_2(t0))) < 15) and (float(abs(hauteur_2(t0)-h+h_obstacle)) < 60)) or ((float(abs(xGuy-t[i].center_3_2(t0))) < 15) and (float(abs(hauteur_2(t0)-h+h_obstacle) < 60)))){
             return true;
         }
     }
 
     //Collision avec les triangles du haut
     for (int i = 3*n_obstacle; i < 4*n_obstacle; i++){
-        if ((float(abs(xGuy+wGuy-t[i].center_1_2(t0))) < 15) and (float(abs(hauteur_1(t0)-h_obstacle) < 60))){
+        if (((float(abs(xGuy+wGuy-t[i].center_1_2(t0))) < 15) and (float(abs(hauteur_2(t0)-h_obstacle) < 60))) or ((float(abs(xGuy-t[i].center_1_2(t0))) < 15) and (float(abs(hauteur_2(t0)-h_obstacle) < 60)))){
             return true;
         }
     }
 
     //Collision grand rectangle
-    if (((float)abs(xGuy+wGuy-t[3*n_obstacle].center_3_2(t0)) < 15) and (float(abs(hauteur_1(t0)-400)) < 121)){
+    if (((float)abs(xGuy+wGuy-t[3*n_obstacle].center_3_2(t0)) < 15) and (float(abs(hauteur_2(t0)-400)) < 121)){
         return true;
     }
 
     if (t[3*n_obstacle].center_3_2(t0) >= xGuy + wGuy + 20){
         //Collision avec le plafond lors de la phase 1
-        if (abs(hauteur_1(t0)-e_h) < 1){
+        if (abs(hauteur_2(t0)-e_h) < 1){
             return true;
         }
     }
     if (t[3*n_obstacle].center_3_2(t0) < xGuy + wGuy + 20){
         //Collision avec le sol lors de la phase 2
-        if (abs(hauteur_1(t0)+hGuy-(h-e_h)) < 1){
+        if (abs(hauteur_2(t0)+hGuy-(h-e_h)) < 1){
             return true;
         }
     }
