@@ -163,9 +163,7 @@ int obstacle::center_3_2(int t) const {
 }
 
 
-
-
-bool Guy::collision(const obstacle t[n_obstacle*4], int t0) const {
+bool Guy::collision(const obstacle t[n_obstacle*5], int t0) const {
     //Collision avec les triangles
     for (int i = 0; i < n_obstacle; i++){
         if (((float(abs(xGuy+wGuy-t[i].center_1(t0))) < 15) and (float(abs(hauteur_1(t0)-h+h_obstacle) < 60))) or ((float(abs(xGuy-t[i].center_1(t0))) < 15) and (float(abs(hauteur_1(t0)-h+h_obstacle) < 60))) ){
@@ -188,7 +186,7 @@ bool Guy::collision(const obstacle t[n_obstacle*4], int t0) const {
     }
 
     //Collision avec les triangles du haut
-    for (int i = 3*n_obstacle; i < 4*n_obstacle; i++){
+    for (int i = 3*n_obstacle; i < 5*n_obstacle; i++){
         if (((float(abs(xGuy+wGuy-t[i].center_1(t0))) < 15) and (float(abs(hauteur_1(t0)-h_obstacle) < 60))) or ((float(abs(xGuy-t[i].center_1(t0))) < 15) and (float(abs(hauteur_1(t0)-h_obstacle) < 60)))){
             return true;
         }
@@ -214,7 +212,7 @@ bool Guy::collision(const obstacle t[n_obstacle*4], int t0) const {
     return false;
 }
 
-bool Guy::collision2(const obstacle t[n_obstacle*4], int t0) const {
+bool Guy::collision2(const obstacle t[n_obstacle*5], int t0) const {
     //Collision avec les triangles
     for (int i = 0; i < n_obstacle; i++){
         if (((float(abs(xGuy+wGuy-t[i].center_1_2(t0))) < 15) and (float(abs(hauteur_2(t0)-h+h_obstacle) < 60))) or ((float(abs(xGuy-t[i].center_1_2(t0))) < 15) and (float(abs(hauteur_2(t0)-h+h_obstacle) < 60))) ){
@@ -237,8 +235,8 @@ bool Guy::collision2(const obstacle t[n_obstacle*4], int t0) const {
     }
 
     //Collision avec les triangles du haut
-    for (int i = 3*n_obstacle; i < 4*n_obstacle; i++){
-        if (((float(abs(xGuy+wGuy-t[i].center_1_2(t0))) < 15) and (float(abs(hauteur_2(t0)-h_obstacle) < 60))) or ((float(abs(xGuy-t[i].center_1_2(t0))) < 15) and (float(abs(hauteur_2(t0)-h_obstacle) < 60)))){
+    for (int i = 3*n_obstacle; i < 5*n_obstacle; i++){
+        if (((float(abs(xGuy+wGuy-t[i].center_1_2(t0))) < 15) and (float(abs(hauteur_2(t0)+hGuy-h_obstacle-e_h) < 60))) or ((float(abs(xGuy-t[i].center_1_2(t0))) < 15) and (float(abs(hauteur_2(t0)+hGuy-h_obstacle-e_h) < 60)))){
             return true;
         }
     }
@@ -248,17 +246,34 @@ bool Guy::collision2(const obstacle t[n_obstacle*4], int t0) const {
         return true;
     }
 
+    //Collision grand rectangle 2
+    if (((float)abs(xGuy+wGuy-t[5*n_obstacle].center_1_2(t0)) < 50) and (float(abs(hauteur_2(t0)-200)) < 10)){
+        return true;
+    }
+
+    //Phase sur le sol 1 (explosion au plafond)
     if (t[3*n_obstacle].center_3_2(t0) >= xGuy + wGuy + 20){
         //Collision avec le plafond lors de la phase 1
         if (abs(hauteur_2(t0)-e_h) < 1){
             return true;
         }
     }
-    if (t[3*n_obstacle].center_3_2(t0) < xGuy + wGuy + 20){
+
+    //Phase sur le plafond 1 (explosion au sol)
+    if ((t[3*n_obstacle].center_3_2(t0) < xGuy + wGuy + 20) and !(t[5*n_obstacle].center_1_2(t0) < xGuy + wGuy + 20)){
         //Collision avec le sol lors de la phase 2
         if (abs(hauteur_2(t0)+hGuy-(h-e_h)) < 1){
             return true;
         }
     }
+
+    //Phase sur le sol 2
+    if (t[5*n_obstacle].center_1_2(t0) < xGuy + wGuy + 20){
+        //Collision avec le plafond
+        if (abs(hauteur_2(t0)-e_h) < 1){
+            return true;
+        }
+    }
+
     return false;
 }

@@ -4,6 +4,7 @@
 #include <Imagine/Graphics.h>
 #include <Imagine/Images.h>
 #include <iostream>
+#include <QApplication>
 
 using namespace Imagine;
 using namespace std;
@@ -41,6 +42,11 @@ int main(){
             }
         }
     }
+
+    if ((Level == 3) or (Level == 4)){
+        drawString(400, 260, "Mise à jour bientôt.", BLACK, 20);
+    }
+
     endGraphics();
     return 0;
 }
