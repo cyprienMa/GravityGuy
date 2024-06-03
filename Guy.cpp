@@ -22,6 +22,10 @@ bool Guy::check_saut(int t0) const {
     return t<=t0 && t0<=t+t_saut;
 }
 
+bool Guy::check_saut_facile(int t0) const {
+    return t<=t0 && t0<=t+t_saut_facile;
+}
+
 //Si le guy est sol "state = true". S'il est au plafond "state = false"
 void Guy::switch_gravity(int t0) {
     ts = t0;
@@ -38,14 +42,14 @@ bool Guy::check_gravity(int t0) const {
 //Si le Guy est en train de sauter, alors on calcule sa hauteur
 float Guy::hauteur_1(int t0) const {
     float H;
-    if(check_saut(t0)) {
+    if(check_saut_facile(t0)) {
         if (state){
-            float x = 1-2*(t0-t)/(float)t_saut;  //La trajectoire du Guy suit une parabole ce qui nous donne sa hauteur
+            float x = 1-2*(t0-t)/(float)t_saut_facile;  //La trajectoire du Guy suit une parabole ce qui nous donne sa hauteur
             H = h - h_saut_facile*(1-x*x) - hGuy - e_b;
         }
 
         if (!state){
-            float x = 1-2*(t0-t)/(float)t_saut;  //La trajectoire du Guy suit une parabole ce qui nous donne sa hauteur
+            float x = 1-2*(t0-t)/(float)t_saut_facile;  //La trajectoire du Guy suit une parabole ce qui nous donne sa hauteur
             H = h_saut_facile*(1-x*x) + e_h;
         }
     }
@@ -74,7 +78,7 @@ float Guy::hauteur_1(int t0) const {
 }
 
 
-// ### Poyr le niveau 2 ####
+// ### Pour le niveau 2 ####
 //Si le Guy est en train de sauter, alors on calcule sa hauteur
 float Guy::hauteur_2(int t0) const {
     float H;
@@ -186,8 +190,8 @@ bool Guy::collision(const obstacle t[n_obstacle*5], int t0) const {
     }
 
     //Collision avec les triangles du haut
-    for (int i = 3*n_obstacle; i < 5*n_obstacle; i++){
-        if (((float(abs(xGuy+wGuy-t[i].center_1(t0))) < 15) and (float(abs(hauteur_1(t0)-h_obstacle) < 60))) or ((float(abs(xGuy-t[i].center_1(t0))) < 15) and (float(abs(hauteur_1(t0)-h_obstacle) < 60)))){
+    for (int i = 3*n_obstacle; i < 4*n_obstacle; i++){
+        if (((float(abs(xGuy+wGuy-t[i].center_1(t0))) < 15) and (float(abs(hauteur_1(t0)+hGuy-h_obstacle-e_h) < 60))) or ((float(abs(xGuy-t[i].center_1(t0))) < 15) and (float(abs(hauteur_1(t0)+hGuy-h_obstacle-e_h) < 60)))){
             return true;
         }
     }

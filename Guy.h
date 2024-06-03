@@ -9,6 +9,7 @@ const int hGuy = 60;
 const int xGuy = 25;
 
 //Durée du saut
+const int t_saut_facile = 35;
 const int t_saut = 20;
 //Hauteur du saut
 const int h_saut_facile = 4*hGuy;
@@ -53,7 +54,7 @@ public:
 class Guy{
     int t; //Date du début du dernier saut du Guy
     int ts; //Date du début du dernier switch de gravité du Guy
-    bool state; //Indique si le Guy est au sol ou pas
+    bool state;//Indique si le Guy est au sol ou pas (true = au sol)
     bool previous_state;
 public:
     Guy();
@@ -61,6 +62,8 @@ public:
     void switch_gravity(int t0);
 
     bool check_saut(int t0) const;
+    bool check_saut_facile(int t0) const;
+
     bool check_gravity(int t0) const;
     bool check_state(int t0) const;
 

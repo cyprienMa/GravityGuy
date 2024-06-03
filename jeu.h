@@ -26,7 +26,7 @@ class jeu{
 
 public:
     jeu();
-    void init();
+    int init();
 
     void dessin(int t) const;
     void dessin2(int t) const; //Pour le niveau 2

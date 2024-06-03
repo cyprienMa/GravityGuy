@@ -1,6 +1,8 @@
 #include"jeu.h"
 #include"Guy.h"
 #include <Imagine/Graphics.h>
+#include <Imagine/Images.h>
+
 using namespace Imagine;
 
 //Fonction keyboard
@@ -14,7 +16,7 @@ int keyboard() {
     return 0;
 }
 
-void jeu::init() {
+int jeu::init() {
     byte* rgb;
     int image_width_window = 1000;
     int image_height_window = 600;
@@ -30,61 +32,93 @@ void jeu::init() {
     int e_h = 20;
 
     // On charge l'image de la ville
-    loadColorImage(srcPath("ville_strip.png"), rgb, image_width_window, image_height_window);
+    if (!(loadColorImage(srcPath("ville_strip.png"), rgb, image_width_window, image_height_window))){
+        std::cout << "Erreur : Impossible de charger l'image ville_strip.png" << std::endl;
+        return 0;
+    }
     my_native_bitmap_ville = NativeBitmap(image_width_window, image_height_window);
     my_native_bitmap_ville.setColorImage(0, 0, rgb, image_width_window, image_height_window);
     delete[] rgb;
 
     // On charge l'image du triangle
-    loadColorImage(srcPath("triangle_strip.png"), rgb, image_width_window, image_height_window);
+    if (!(loadColorImage(srcPath("triangle_strip.png"), rgb, image_width_window, image_height_window))){
+        std::cout << "Erreur : Impossible de charger l'image triangle_strip.png" << std::endl;
+        return 0;
+    }
     my_native_bitmap_triangle = NativeBitmap(image_width_window, image_height_window);
     my_native_bitmap_triangle.setColorImage(0, 0, rgb, image_width_window, image_height_window);
     delete[] rgb;
 
     // On charge l'image du losange
-    loadColorImage(srcPath("losange_strip.png"), rgb, image_width_window, image_height_window);
+    if ((!loadColorImage(srcPath("losange_strip.png"), rgb, image_width_window, image_height_window))){
+        std::cout << "Erreur : Impossible de charger l'image losange_strip.png" << std::endl;
+        return 0;
+    }
     my_native_bitmap_losange = NativeBitmap(image_width_window, image_height_window);
     my_native_bitmap_losange.setColorImage(0, 0, rgb, image_width_window, image_height_window);
     delete[] rgb;
 
     // On charge l'image du rond
-    loadColorImage(srcPath("rond.jpg"), rgb, image_width_window, image_height_window);
+    if (!(loadColorImage(srcPath("rond.jpg"), rgb, image_width_window, image_height_window))){
+        std::cout << "Erreur : Impossible de charger l'image rond.jpg" << std::endl;
+        return 0;
+    }
     my_native_bitmap_rond = NativeBitmap(image_width_window, image_height_window);
     my_native_bitmap_rond.setColorImage(0, 0, rgb, image_width_window, image_height_window);
     delete[] rgb;
 
     // On charge l'image du rectangle qui mène au switch
-    loadColorImage(srcPath("rect_strip.png"), rgb, image_width_rect, image_height_rect);
+   if (!(loadColorImage(srcPath("rect_strip.png"), rgb, image_width_rect, image_height_rect))){
+       std::cout << "Erreur : Impossible de charger l'image rect_strip.png" << std::endl;
+       return 0;
+    }
     my_native_bitmap_rect = NativeBitmap(image_width_rect, image_height_rect);
     my_native_bitmap_rect.setColorImage(0, 0, rgb, image_width_rect, image_height_rect);
     delete[] rgb;
 
     // On charge l'image du sol et du plafond
-    loadColorImage(srcPath("sol_rouge_strip.png"), rgb, image_width_window, e_h);
+    if (!(loadColorImage(srcPath("sol_rouge_strip.png"), rgb, image_width_window, e_h))){
+        std::cout << "Erreur : Impossible de charger l'image sol_rouge_strip.png" << std::endl;
+        return 0;
+    }
     my_native_bitmap_lava = NativeBitmap(image_width_window, e_h);
     my_native_bitmap_lava.setColorImage(0, 0, rgb, image_width_window, e_h);
     delete[] rgb;
 
-    loadColorImage(srcPath("sol_bleu_strip.png"), rgb, image_width_window, e_h);
+    if (!(loadColorImage(srcPath("sol_bleu_strip.png"), rgb, image_width_window, e_h))){
+        std::cout << "Erreur : Impossible de charger l'image sol_bleu_strip.png" << std::endl;
+        return 0;
+    }
     my_native_bitmap_sol = NativeBitmap(image_width_window, e_h);
     my_native_bitmap_sol.setColorImage(0, 0, rgb, image_width_window, e_h);
     delete[] rgb;
 
     // On charge l'image du guy et du boom
-    loadColorImage(srcPath("guy_strip.png"), rgb, image_width_guy, image_height_guy);
+    if (!(loadColorImage(srcPath("guy_strip.png"), rgb, image_width_guy, image_height_guy))){
+        std::cout << "Erreur : Impossible de charger l'image guy_strip.png" << std::endl;
+        return 0;
+    }
     my_native_bitmap = NativeBitmap(image_width_guy, image_height_guy);
     my_native_bitmap.setColorImage(0, 0, rgb, image_width_guy, image_height_guy);
     delete[] rgb;
 
-    loadColorImage(srcPath("guy_upside_strip.png"), rgb, image_width_guy, image_height_guy);
+    if (!(loadColorImage(srcPath("guy_upside_strip.png"), rgb, image_width_guy, image_height_guy))){
+        std::cout << "Erreur : Impossible de charger l'image guy_upside_strip.png" << std::endl;
+        return 0;
+    }
     my_native_bitmap_bis = NativeBitmap(60, 60);
     my_native_bitmap_bis.setColorImage(0, 0, rgb, image_width_guy, image_height_guy);
     delete[] rgb;
 
-    loadColorImage(srcPath("boom_strip.png"), rgb, image_width_boom, image_height_boom);
+   if (!(loadColorImage(srcPath("boom_strip.png"), rgb, image_width_boom, image_height_boom))){
+       std::cout << "Erreur : Impossible de charger l'image boom_strip.png" << std::endl;
+       return 0;
+   }
     my_native_bitmap_boom = NativeBitmap(60, 60);
     my_native_bitmap_boom.setColorImage(0, 0, rgb, image_width_boom, image_height_boom);
     delete[] rgb;
+
+    return 1;
 }
 
 //Initialisation du jeu
@@ -143,11 +177,8 @@ void jeu::dessin(int t) const {
     clearWindow();
     int image_width_window = 1000;
     int image_height_window = 600;
-    byte* rgb;
 
-    loadColorImage(srcPath("ville_strip.png"), rgb, image_width_window, image_height_window);
-    NativeBitmap my_native_bitmap_ville(image_width_window, image_height_window);
-    my_native_bitmap_ville.setColorImage(0,0,rgb,image_width_window, image_height_window);
+    // Dessin de la ville
     putNativeBitmap(0, 0, my_native_bitmap_ville);
 
     //On dessine l'obstacle_1 (Triangles)
@@ -194,20 +225,6 @@ void jeu::dessin(int t) const {
     int image_width = 10;
     int image_height = 10;
 
-    loadColorImage(srcPath("guy_strip.png"), rgb, image_width, image_height);
-    NativeBitmap my_native_bitmap(image_width, image_height);
-    my_native_bitmap.setColorImage(0,0,rgb,image_width, image_height);
-
-    loadColorImage(srcPath("guy_upside_strip.png"), rgb, image_width, image_height);
-    NativeBitmap my_native_bitmap_bis(image_width, image_height);
-    my_native_bitmap_bis.setColorImage(0,0,rgb,image_width, image_height);
-
-    loadColorImage(srcPath("boom_strip.png"), rgb, image_width, image_height);
-    NativeBitmap my_native_bitmap_boom(image_width, image_height);
-    my_native_bitmap_boom.setColorImage(0,0,rgb,image_width, image_height);
-
-    delete[] rgb;
-
     if (guy.check_state(t)){
         putNativeBitmap(xGuy, guy.hauteur_1(t), my_native_bitmap);
     }
@@ -218,6 +235,26 @@ void jeu::dessin(int t) const {
     if (guy.collision(T,t)){
         putNativeBitmap(xGuy, guy.hauteur_1(t), my_native_bitmap_boom);
     }
+
+    // Les messages de la demo
+    // Instruction pour le saut
+    if (T[0].center_1(t) > 200) {
+        fillRect(350, 230, 290, 50, YELLOW);
+        drawString(355, 260, "Pour sauter, appuyez sur espace", BLACK, 20);
+    }
+
+    // Message d'annonce du switch
+    if (T[3 * n_obstacle].center_3(t) < 800 && T[3 * n_obstacle].center_3(t) > 200) {
+        fillRect(350, 230, 340, 50, YELLOW);
+        drawString(355, 260, "Pour changer la gravité, appuyez sur G", BLACK, 20);
+    }
+
+    //Instruction pour le saut au plafond
+    if (T[3*n_obstacle].center_3(t) < xGuy + wGuy){
+        fillRect(320, 230, 400, 50, YELLOW);
+        drawString(325, 260, "Pour décoller du plafond, appuyez sur espace", BLACK, 20);
+    }
+
 
     noRefreshEnd();
 }
@@ -275,12 +312,12 @@ void jeu::dessin2(int t) const {
     // Messages d'annonce du switch
     if (T[3 * n_obstacle].center_3_2(t) < 800 && T[3 * n_obstacle].center_3_2(t) > 200) {
         fillRect(300, 300, 280, 50, WHITE);
-        drawString(350, 322, "Get ready to SWITCH", BLACK, 20);
+        drawString(400, 260, "Get ready to SWITCH", BLACK, 20);
     }
 
     if (T[5 * n_obstacle].center_1_2(t) < 800 && T[5 * n_obstacle].center_1_2(t) > 200){
         fillRect(300, 300, 280, 50, WHITE);
-        drawString(350, 322, "Get ready to SWITCH", BLACK, 20);
+        drawString(400, 260, "Get ready to SWITCH", BLACK, 20);
     }
 
 
