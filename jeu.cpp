@@ -94,29 +94,26 @@ int jeu::init() {
     delete[] rgb;
 
     // On charge l'image du guy et du boom
-    if (!(loadColorImage(srcPath("guy_strip.png"), rgb, image_width_guy, image_height_guy))){
-        std::cout << "Erreur : Impossible de charger l'image guy_strip.png" << std::endl;
+    if (!load(Img_guy, srcPath("guy_strip.png"))) {
+        cout << "Failed to load image guy!" << endl;
         return 0;
     }
-    my_native_bitmap = NativeBitmap(image_width_guy, image_height_guy);
-    my_native_bitmap.setColorImage(0, 0, rgb, image_width_guy, image_height_guy);
-    delete[] rgb;
+    AlphaColor backgroundColorGuy = Img_guy(0, 0);
+    makeBackgroundTransparent(Img_guy, backgroundColorGuy);
 
-    if (!(loadColorImage(srcPath("guy_upside_strip.png"), rgb, image_width_guy, image_height_guy))){
-        std::cout << "Erreur : Impossible de charger l'image guy_upside_strip.png" << std::endl;
+    if (!load(Img_guy_upside, srcPath("guy_upside_strip.png"))) {
+        cout << "Failed to load image guy upside!" << endl;
         return 0;
     }
-    my_native_bitmap_bis = NativeBitmap(60, 60);
-    my_native_bitmap_bis.setColorImage(0, 0, rgb, image_width_guy, image_height_guy);
-    delete[] rgb;
+    AlphaColor backgroundColorGuyUpside = Img_guy_upside(0, 0);
+    makeBackgroundTransparent(Img_guy_upside, backgroundColorGuyUpside);
 
-   if (!(loadColorImage(srcPath("boom_strip.png"), rgb, image_width_boom, image_height_boom))){
-       std::cout << "Erreur : Impossible de charger l'image boom_strip.png" << std::endl;
-       return 0;
-   }
-    my_native_bitmap_boom = NativeBitmap(60, 60);
-    my_native_bitmap_boom.setColorImage(0, 0, rgb, image_width_boom, image_height_boom);
-    delete[] rgb;
+    if (!load(Img_boom, srcPath("boom_strip.png"))) {
+        cout << "Failed to load image boom!" << endl;
+        return 0;
+    }
+    AlphaColor backgroundColorBoom = Img_boom(0, 0);
+    makeBackgroundTransparent(Img_boom, backgroundColorBoom);
 
     return 1;
 }
@@ -226,14 +223,14 @@ void jeu::dessin(int t) const {
     int image_height = 10;
 
     if (guy.check_state(t)){
-        putNativeBitmap(xGuy, guy.hauteur_1(t), my_native_bitmap);
+        display(Img_guy,xGuy, guy.hauteur_1(t));
     }
     else{
-        putNativeBitmap(xGuy, guy.hauteur_1(t), my_native_bitmap_bis);
+        display(Img_guy_upside,xGuy, guy.hauteur_1(t));;
     }
 
     if (guy.collision(T,t)){
-        putNativeBitmap(xGuy, guy.hauteur_1(t), my_native_bitmap_boom);
+        display(Img_boom,xGuy, guy.hauteur_1(t));;
     }
 
     // Les messages de la demo
@@ -323,14 +320,14 @@ void jeu::dessin2(int t) const {
 
     // Dessin du guy
     if (guy.check_state(t)) {
-        putNativeBitmap(xGuy, guy.hauteur_2(t), my_native_bitmap);
+        display(Img_guy,xGuy, guy.hauteur_2(t));
     } else {
-        putNativeBitmap(xGuy, guy.hauteur_2(t), my_native_bitmap_bis);
+        display(Img_guy_upside,xGuy, guy.hauteur_2(t));;
     }
 
     // Dessin de l'explosion au moment de la collision
     if (guy.collision2(T, t)) {
-        putNativeBitmap(xGuy, guy.hauteur_2(t), my_native_bitmap_boom);
+        display(Img_boom,xGuy, guy.hauteur_2(t));;
     }
 
     //Message de fin du niveau
@@ -435,6 +432,19 @@ int jeu::menu(){
 
 
 
+void makeBackgroundTransparent(Image<AlphaColor>& img, AlphaColor backgroundColor){
+    int width = img.width();
+    int height = img.height();
 
+    for(int y=0; y<height; y++){
+        for(int x=0; x< width; x++){
+            AlphaColor& pixel = img(x, y);
+            if (pixel.r() == backgroundColor.r()&& pixel.g()==backgroundColor.g()&& pixel.b()==backgroundColor.b()&& pixel.a() ==backgroundColor.a()){
+                pixel.a() = 0;
+            }
+
+        }
+    }
+}
 
 
